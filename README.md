@@ -1,7 +1,7 @@
 ddr_pad_controller
 ==================
 
-Arduino Dance Ddance Revolution Controller
+Arduino Dance Dance Revolution Controller
 
 I had an Arduino sitting around from forever ago and decided to try to revive a knock-off DDR Mat that had a bad controller box.
 
