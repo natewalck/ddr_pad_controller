@@ -25,6 +25,24 @@ uint8_t buf[8] = {
 #define PIN_START 8
 #define PIN_BACK 9 
 
+int upRightButtonState;
+int upLeftbuttonState;
+int rightButtonState;
+int leftButtonState;
+int downButtonState;
+int upButtonState;
+int startButtonState;
+int backButtonState;
+
+unsigned long up_right_timer;
+unsigned long up_left_timer;
+unsigned long right_timer;
+unsigned long left_timer;
+unsigned long down_timer;
+unsigned long up_timer;
+unsigned long start_timer;
+unsigned long back_timer;
+
 // Create bouncer object for each button
 Bounce ur_debouncer = Bounce();
 Bounce ul_debouncer = Bounce();
@@ -121,57 +139,71 @@ void loop()
   if ( stateChangedRight ) {
     int LAST_PIN_RIGHT_ARROW = r_debouncer.read(); 
 
-    if ( LAST_PIN_RIGHT_ARROW == LOW)
+    if ( LAST_PIN_RIGHT_ARROW == HIGH )
+    // Button was released
     {
-      buf[2] = 79;     // Right Arrow
-      Serial.write(buf, 8);   // Send keypress
-    } else {
-      buf[2] = 79;     // Right Arrow
-      Serial.write(buf, 8);   // Send keypress
+      rightButtonState = 0;
       releaseKey();
+    } else {
+    // Button was pressed
+      buf[2] = 79;     // Right Arrow
+      Serial.write(buf, 8);   // Send keypress
+      rightButtonState = 1;
+      right_timer = millis();
     }
   }
 
 
-  if ( stateChangedLeft) {
+  if ( stateChangedLeft ) {
     int LAST_PIN_LEFT_ARROW = l_debouncer.read(); 
 
-    if ( LAST_PIN_LEFT_ARROW == LOW)
+    if ( LAST_PIN_LEFT_ARROW == HIGH )
+    // Button was released
     {
-      buf[2] = 80;     // Left Arrow
-      Serial.write(buf, 8);   // Send keypress
-    } else {
-      buf[2] = 80;     // Left Arrow
-      Serial.write(buf, 8);   // Send keypress
+      leftButtonState = 0;
       releaseKey();
+    } else {
+    // Button was pressed
+      buf[2] = 80;     // Left Arrow
+      Serial.write(buf, 8);   // Send keypress
+      leftButtonState = 1;
+      left_timer = millis();
     }
   }
 
-  if ( stateChangedDown) {
+
+  if ( stateChangedDown ) {
     int LAST_PIN_DOWN_ARROW = d_debouncer.read(); 
 
-    if ( LAST_PIN_DOWN_ARROW == LOW)
+    if ( LAST_PIN_DOWN_ARROW == HIGH )
+    // Button was released
     {
-      buf[2] = 81;     // Down Arrow
-      Serial.write(buf, 8);   // Send keypress
-    } else {
-      buf[2] = 81;     // Down Arrow
-      Serial.write(buf, 8);   // Send keypress
+      downButtonState = 0;
       releaseKey();
+    } else {
+    // Button was pressed
+      buf[2] = 81;     // Down Arrow
+      Serial.write(buf, 8);   // Send keypress
+      downButtonState = 1;
+      down_timer = millis();
     }
   }
 
-  if ( stateChangedUp) {
+
+  if ( stateChangedUp ) {
     int LAST_PIN_UP_ARROW = u_debouncer.read(); 
 
-    if ( LAST_PIN_UP_ARROW == LOW)
+    if ( LAST_PIN_UP_ARROW == HIGH )
+    // Button was released
     {
+      upButtonState = 0;
+      releaseKey();
+    } else {
+    // Button was pressed
       buf[2] = 82;     // Up Arrow 
       Serial.write(buf, 8);   // Send keypress
-    } else {
-      buf[2] = 82;     // Up Arrow
-      Serial.write(buf, 8);   // Send keypress
-      releaseKey();
+      upButtonState = 1;
+      up_timer = millis();
     }
   }
 
