@@ -1,13 +1,13 @@
 /*
   Arduino DDR Pad Controller
-  41 = Escape
-  79 = Right Arrow
-  80 = Left Arrow
-  81 = Down Arrow
-  82 = Up Arrow
-  88 = Enter
-  95 = Keypad 7 (Up Left)
-  97 = Keypad 9 (Up Right)
+  Pin 2 = 97 (Keypad 9 - Up Right)
+  Pin 3 = 95 (Keypad 7 - Up Left)
+  Pin 4 = 79 (Right Arrow)
+  Pin 5 = 80 (Left Arrow)
+  Pin 6 = 81 (Down Arrow)
+  Pin 7 = 82 (Up Arrow)
+  Pin 8 = 88 (Enter)
+  Pin 9 = 41 (Escape)
 */
 
 #include "Bounce2.h"
@@ -23,25 +23,7 @@ uint8_t buf[8] = {
 #define PIN_DOWN_ARROW 6
 #define PIN_UP_ARROW 7
 #define PIN_START 8
-#define PIN_BACK 9 
-
-int upRightButtonState;
-int upLeftbuttonState;
-int rightButtonState;
-int leftButtonState;
-int downButtonState;
-int upButtonState;
-int startButtonState;
-int backButtonState;
-
-unsigned long up_right_timer;
-unsigned long up_left_timer;
-unsigned long right_timer;
-unsigned long left_timer;
-unsigned long down_timer;
-unsigned long up_timer;
-unsigned long start_timer;
-unsigned long back_timer;
+#define PIN_BACK 9
 
 // Create bouncer object for each button
 Bounce ur_debouncer = Bounce();
@@ -65,6 +47,7 @@ void setup()
   pinMode(PIN_UP_ARROW, INPUT);
   pinMode(PIN_START, INPUT);
   pinMode(PIN_BACK, INPUT);
+
   // enable internal pull-ups
   digitalWrite(PIN_UP_RIGHT_ARROW, HIGH);
   digitalWrite(PIN_UP_LEFT_ARROW, 1);
@@ -112,27 +95,27 @@ void loop()
     int LAST_PIN_UP_RIGHT_ARROW = ur_debouncer.read(); 
 
     if ( LAST_PIN_UP_RIGHT_ARROW == LOW)
+    // Button was released
     {
-      buf[2] = 97;     // Keypad 9
-      Serial.write(buf, 8);   // Send keypress
-    } else {
-      buf[2] = 97;     // Keypad 9
-      Serial.write(buf, 8);   // Send keypress
       releaseKey();
+    } else {
+    // Button was pressed
+      buf[2] = 97;     // Keypad 9
+      Serial.write(buf, 8);   // Send keypress
     }
   }
 
   if ( stateChangedUpLeft ) {
     int LAST_PIN_UP_LEFT_ARROW = ul_debouncer.read(); 
 
-    if ( LAST_PIN_UP_LEFT_ARROW == LOW)
+    if ( LAST_PIN_UP_LEFT_ARROW == HIGH )
+    // Button was released
     {
-      buf[2] = 95;     // Keypad 7
-      Serial.write(buf, 8);   // Send keypress
-    } else {
-      buf[2] = 95;     // Keypad 7
-      Serial.write(buf, 8);   // Send keypress
       releaseKey();
+    } else {
+    // Button was pressed
+      buf[2] = 95;     // Keypad 7
+      Serial.write(buf, 8);   // Send keypress
     }
   }
 
@@ -142,14 +125,11 @@ void loop()
     if ( LAST_PIN_RIGHT_ARROW == HIGH )
     // Button was released
     {
-      rightButtonState = 0;
       releaseKey();
     } else {
     // Button was pressed
       buf[2] = 79;     // Right Arrow
       Serial.write(buf, 8);   // Send keypress
-      rightButtonState = 1;
-      right_timer = millis();
     }
   }
 
@@ -160,14 +140,11 @@ void loop()
     if ( LAST_PIN_LEFT_ARROW == HIGH )
     // Button was released
     {
-      leftButtonState = 0;
       releaseKey();
     } else {
     // Button was pressed
       buf[2] = 80;     // Left Arrow
       Serial.write(buf, 8);   // Send keypress
-      leftButtonState = 1;
-      left_timer = millis();
     }
   }
 
@@ -178,14 +155,11 @@ void loop()
     if ( LAST_PIN_DOWN_ARROW == HIGH )
     // Button was released
     {
-      downButtonState = 0;
       releaseKey();
     } else {
     // Button was pressed
       buf[2] = 81;     // Down Arrow
       Serial.write(buf, 8);   // Send keypress
-      downButtonState = 1;
-      down_timer = millis();
     }
   }
 
@@ -196,14 +170,11 @@ void loop()
     if ( LAST_PIN_UP_ARROW == HIGH )
     // Button was released
     {
-      upButtonState = 0;
       releaseKey();
     } else {
     // Button was pressed
       buf[2] = 82;     // Up Arrow 
       Serial.write(buf, 8);   // Send keypress
-      upButtonState = 1;
-      up_timer = millis();
     }
   }
 
@@ -211,14 +182,14 @@ void loop()
   if ( stateChangedStart ) {
     int LAST_PIN_START = s_debouncer.read(); 
 
-    if ( LAST_PIN_START == LOW)
+    if ( LAST_PIN_START == HIGH )
+    // Button was released
     {
-      buf[2] = 88;     // Enter
-      Serial.write(buf, 8);   // Send keypress
+      releaseKey();
     } else {
+    // Button was pressed
       buf[2] = 88;     // Enter 
       Serial.write(buf, 8);   // Send keypress
-      releaseKey();
     }
   }
 
@@ -226,14 +197,14 @@ void loop()
   if ( stateChangedBack) {
     int LAST_PIN_BACK = b_debouncer.read(); 
 
-    if ( LAST_PIN_BACK == LOW)
+    if ( LAST_PIN_BACK == HIGH)
+    // Button was released
     {
-      buf[2] = 41;     // Escape
-      Serial.write(buf, 8);   // Send keypress
-    } else {
-      buf[2] = 41;     // Escape
-      Serial.write(buf, 8);   // Send keypress
       releaseKey();
+    } else {
+    // Button was pressed
+      buf[2] = 41;     // Escape
+      Serial.write(buf, 8);   // Send keypress
     }
   }
 
